@@ -55,7 +55,7 @@ type Review {
 ### Get all authors
 ![GraphQL Query Example](images/get-all-authors.png)
 
-###
+### Add a new game
 ![GraphQL Mutation Example](images/add-a-new-game.png)
 
 
