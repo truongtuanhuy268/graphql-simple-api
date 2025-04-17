@@ -39,6 +39,17 @@ export const typeDefs = `#graphql
         deleteAuthor(id: ID!): Author
         updateAuthor(id: ID!, author: UpdateAuthorInput!): Author
     }
+    type Subscription {
+        gameAdded: Game
+        gameUpdated: Game
+        gameDeleted: Game
+        reviewAdded: Review
+        reviewUpdated: Review
+        reviewDeleted: Review
+        authorAdded: Author
+        authorUpdated: Author
+        authorDeleted: Author
+    }
     input AddGameInput {
         title: String!
         platform: [String!]!
@@ -65,4 +76,4 @@ export const typeDefs = `#graphql
         name: String
         verified: Boolean
     }
-`
+`;
