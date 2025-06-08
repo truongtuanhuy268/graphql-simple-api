@@ -81,6 +81,8 @@ const resolvers = {
             ...args.game,
           };
         }
+        
+        pubsub.publish(GAME_UPDATED, { gameUpdated: game });
         return game;
       });
 
@@ -96,6 +98,7 @@ const resolvers = {
         ...args.review,
       };
       check.reviews.push(newReview);
+      pubsub.publish(REVIEW_ADDED, { reviewAdded: newReview });
       return newReview;
     },
     deleteReview: (_, args) => {
@@ -103,7 +106,7 @@ const resolvers = {
         (review) => review.id === args.id
       );
       check.reviews = check.reviews.filter((review) => review.id !== args.id);
-
+      pubsub.publish(REVIEW_DELETED, { reviewDeleted: deletedReview });
       return deletedReview;
     },
     updateReview: (_, args) => {
@@ -114,9 +117,16 @@ const resolvers = {
             ...args.review,
           };
         }
+        pubsub.publish(REVIEW_UPDATED, {reviewUpdated: review});
         return review;
       });
-      return check.reviews.find((review) => review.id === args.id);
+      const updatedReview = check.reviews.find(
+        (review) => review.id === args.id
+      );
+      
+      pubsub.publish(REVIEW_UPDATED, {reviewUpdated: review});
+
+      return updatedReview
     },
     addAuthor: (_, args) => {
       const newAuthor = {
@@ -124,6 +134,7 @@ const resolvers = {
         ...args.author,
       };
       check.authors.push(newAuthor);
+      pubsub.publish(AUTHOR_ADDED, { authorAdded: newAuthor });
       return newAuthor;
     },
     deleteAuthor: (_, args) => {
@@ -131,7 +142,7 @@ const resolvers = {
         (author) => author.id === args.id
       );
       check.authors = check.authors.filter((author) => author.id !== args.id);
-
+      pubsub.publish(AUTHOR_DELETED, { authorDeleted: deletedAuthor });
       return deletedAuthor;
     },
     updateAuthor: (_, args) => {
@@ -142,9 +153,15 @@ const resolvers = {
             ...args.author,
           };
         }
+        
+        pubsub.publish(AUTHOR_UPDATED, { authorUpdated: author });
         return author;
       });
-      return check.authors.find((author) => author.id === args.id);
+      const updatedAuthor = check.authors.find(
+        (author) => author.id === args.id
+      );
+      pubsub.publish(AUTHOR_UPDATED, { authorUpdated: updatedAuthor });
+      return updatedAuthor;
     },
   },
 
@@ -158,6 +175,24 @@ const resolvers = {
     },
     gameDeleted: {
       subscribe: () => pubsub.asyncIterableIterator([GAME_DELETED]),
+    },
+    authorAdded: {
+      subscribe: () => pubsub.asyncIterableIterator([AUTHOR_ADDED]),
+    },
+    authorUpdated: {
+      subscribe: () => pubsub.asyncIterableIterator([AUTHOR_UPDATED]),
+    },
+    authorDeleted: {
+      subscribe: () => pubsub.asyncIterableIterator([AUTHOR_DELETED]),
+    },
+    reviewAdded: {
+      subscribe: () => pubsub.asyncIterableIterator([REVIEW_ADDED]),
+    },
+    reviewUpdated: {
+      subscribe: () => pubsub.asyncIterableIterator([REVIEW_UPDATED]),
+    },
+    reviewDeleted: {
+      subscribe: () => pubsub.asyncIterableIterator([REVIEW_DELETED]),
     },
   },
 };
